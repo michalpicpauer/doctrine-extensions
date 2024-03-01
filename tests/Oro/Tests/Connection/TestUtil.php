@@ -5,6 +5,7 @@ namespace Oro\Tests\Connection;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\ORMSetup;
@@ -17,6 +18,7 @@ class TestUtil
     /**
      * @throws \RuntimeException
      * @throws ORMException
+     * @throws Exception
      */
     public static function getEntityManager(): EntityManager
     {
@@ -28,7 +30,7 @@ class TestUtil
             self::$entityManager = new EntityManager(
                 new Connection(
                     $dbParams,
-                    new Driver\PDO\PgSQL\Driver()
+                    $GLOBALS['db_type'] === 'pdo_pgsql' ? new Driver\PDO\PgSQL\Driver() : new Driver\PDO\MySQL\Driver()
                 ),
                 $config
             );

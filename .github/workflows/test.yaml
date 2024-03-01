@@ -11,13 +11,26 @@ jobs:
                 db: ['mysql:8.0.36', 'mariadb:10.6', 'percona:5.7']
                 vars: ['-p 33060:3306 -e MYSQL_PASSWORD=github -e MYSQL_DATABASE=doctrine_extensions_tests -e MYSQL_USER=github -e MYSQL_ALLOW_EMPTY_PASSWORD=yes']
                 include:
+                    - db: 'mysql:8.0.36'
+                      env: 'DB=mysql'
+                      vars: ['-p 33060:3306 -e MYSQL_PASSWORD=github -e MYSQL_DATABASE=doctrine_extensions_tests -e MYSQL_USER=github -e MYSQL_ALLOW_EMPTY_PASSWORD=yes']
+                    - db: 'mariadb:10.6'
+                      env: 'DB=mysql'
+                      vars: ['-p 33060:3306 -e MYSQL_PASSWORD=github -e MYSQL_DATABASE=doctrine_extensions_tests -e MYSQL_USER=github -e MYSQL_ALLOW_EMPTY_PASSWORD=yes']
+                    - db: 'percona:5.7'
+                      env: 'DB=mysql'
+                      vars: ['-p 33060:3306 -e MYSQL_PASSWORD=github -e MYSQL_DATABASE=doctrine_extensions_tests -e MYSQL_USER=github -e MYSQL_ALLOW_EMPTY_PASSWORD=yes']
                     - db: 'postgres:12.18'
+                      env: 'DB=pgsql'
                       vars: ['-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github']
                     - db: 'postgres:13.14'
+                      env: 'DB=pgsql'
                       vars: [ '-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github' ]
                     - db: 'postgres:14.11'
+                      env: 'DB=pgsql'
                       vars: [ '-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github' ]
                     - db: 'postgres:15.6'
+                      env: 'DB=pgsql'
                       vars: [ '-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github' ]
 
         services:

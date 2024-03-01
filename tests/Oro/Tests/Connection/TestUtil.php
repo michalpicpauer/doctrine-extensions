@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace Oro\Tests\Connection;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\ORMSetup;
 
 class TestUtil
 {
@@ -13,7 +16,7 @@ class TestUtil
 
     /**
      * @throws \RuntimeException
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public static function getEntityManager(): EntityManager
     {
@@ -21,8 +24,14 @@ class TestUtil
             $dbParams = self::getConnectionParams();
             $entitiesPath = \realpath(__DIR__ . '/../../Entities');
 
-            $config = Setup::createAnnotationMetadataConfiguration([$entitiesPath], true);
-            self::$entityManager = EntityManager::create($dbParams, $config);
+            $config = ORMSetup::createAttributeMetadataConfiguration([$entitiesPath], true);
+            self::$entityManager = new EntityManager(
+                new Connection(
+                    $dbParams,
+                    new Driver\PDO\PgSQL\Driver()
+                ),
+                $config
+            );
         }
 
         if (self::$entityManager) {

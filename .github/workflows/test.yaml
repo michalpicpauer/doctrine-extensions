@@ -7,12 +7,18 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php: [7.3, 7.4]
-                db: ['mysql:8.0.3', 'mariadb:10.1', 'percona:5.7']
-                vars: ['-p 33060:3306 -e MYSQL_PASSWORD=travis -e MYSQL_DATABASE=doctrine_extensions_tests -e MYSQL_USER=travis -e MYSQL_ALLOW_EMPTY_PASSWORD=yes']
+                php: [8.1, 8.2, 8.3]
+                db: ['mysql:8.0.36', 'mariadb:10.6', 'percona:5.7']
+                vars: ['-p 33060:3306 -e MYSQL_PASSWORD=github -e MYSQL_DATABASE=doctrine_extensions_tests -e MYSQL_USER=github -e MYSQL_ALLOW_EMPTY_PASSWORD=yes']
                 include:
-                    - db: 'postgres:9.6'
-                      vars: ['-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=travis -e POSTGRES_PASSWORD=travis']
+                    - db: 'postgres:12.18'
+                      vars: ['-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github']
+                    - db: 'postgres:13.14'
+                      vars: [ '-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github' ]
+                    - db: 'postgres:14.11'
+                      vars: [ '-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github' ]
+                    - db: 'postgres:15.6'
+                      vars: [ '-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=github -e POSTGRES_PASSWORD=github' ]
 
         services:
             database:

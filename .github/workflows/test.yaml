@@ -1,0 +1,43 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php: [7.3, 7.4]
+                db: ['mysql:8.0.3', 'mariadb:10.1', 'percona:5.7']
+                vars: ['-p 33060:3306 -e MYSQL_PASSWORD=travis -e MYSQL_DATABASE=doctrine_extensions_tests -e MYSQL_USER=travis -e MYSQL_ALLOW_EMPTY_PASSWORD=yes']
+                include:
+                    - db: 'postgres:9.6'
+                      vars: ['-p 54320:5432 -e POSTGRES_DB=doctrine_extensions_tests -e POSTGRES_USER=travis -e POSTGRES_PASSWORD=travis']
+
+        services:
+            database:
+                image: ${{ matrix.db }}
+                options: ${{ matrix.vars }}
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+
+            - name: Validate composer.json and composer.lock
+              run: composer validate
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-interaction --no-suggest
+
+            - name: Run PHPUnit
+              run: vendor/bin/phpunit --configuration tests/config/$DB.phpunit.xml --testsuite="Oro Doctrine Extensions Test Suite"
+
+            - name: Run PHPCS
+              run: vendor/bin/phpcs src/ tests/ -p --encoding=utf-8 --extensions=php --standard=psr2
+
+            - name: Run Tear Down Tests
+              run: vendor/bin/phpunit --configuration tests/config/$DB.phpunit.xml tests/Oro/Tests/Connection/TearDownTest.php
